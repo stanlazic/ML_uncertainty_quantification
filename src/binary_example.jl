@@ -23,7 +23,7 @@ include("functions.jl")
 # set seed
 Random.seed!(1234)
 
-n_samples = 5000
+n_samples = 5_000
 n_chains = 3
 
 # fit model
@@ -32,7 +32,6 @@ post = sample(binom(x₁, x₂, grp),
               MCMCThreads(),
               n_samples,
               n_chains)
-
 
 
 # extract parameters
@@ -47,7 +46,7 @@ boundary_line = boundary(mean(pars.θ₀),
                          x1_values, 0.5)
 
 # calculate 95% CI for decision boundary
-boundary_err = Array{Float64}(undef, size(pars)[1], size(x1_values)[1])
+boundary_err = Array{Float64}(undef, size(pars)[1], length(x1_values))
 for i in 1:size(pars)[1]
     boundary_err[i, :] = boundary(pars.θ₀[i], pars.θ₁[i], pars.θ₂[i], pars.θ₃[i],
                       x1_values, 0.5)
@@ -92,14 +91,15 @@ for i in 1:N
 end
 
 
-p1 = scatter(x₁, x₂, ylab="x₂", xlab="x₁",
-             legend=:none, markersize=5, title="A\nData", titleloc = :left, 
+labels = ifelse.(grp .== 0, "Safe", "Toxic")
+
+p1 = scatter(x₁, x₂, ylab="x₂", xlab="x₁", group=labels, 
+             legend=:topleft, markersize=5, title="A\nData", titleloc = :left, 
              markershape=ifelse.(grp .== 0, :circle, :utriangle), 
              color=ifelse.(grp .== 0, :steelblue, :grey30),
              markerstrokecolor=ifelse.(grp .== 0, :steelblue, :grey30),
              ylim=(-0.05, 1.025), xlim=(-0.05, 1.025))
-p1 = plot!(x1_values, boundary_line, color=:black, linewidth=2)
-
+p1 = plot!(x1_values, boundary_line, color=:black, linewidth=2, label=:none)
 
 p2 = scatter(means, sds, xlab="μ", ylab="σ",
              title="B\nMean - variance relationship", titleloc = :left, 

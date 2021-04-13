@@ -29,7 +29,7 @@ mod_preds = predict(mod, DataFrame(x=x_new), interval=:prediction)
 Random.seed!(1234)
 
 # MCMC parameters
-n_samples = 20000
+n_samples = 20_000
 n_chains = 3
 
 # fit Bayesian model
@@ -41,7 +41,7 @@ post = sample(quad_mod(x_small, y_small),
 
 
 # predictions for new x-values
-post_pred = turing_predict(; post=post, x_new=x_new, model="quad_mod")
+post_pred = turing_predict(post=post, x_new=x_new, model="quad_mod")
 
 # set up plot
 p = scatter([], [], legend=false, color=:steelblue,

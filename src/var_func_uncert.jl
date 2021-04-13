@@ -23,7 +23,7 @@ include("functions.jl")
 Random.seed!(1234)
 
 # MCMC parameters
-n_samples = 10000
+n_samples = 10_000
 n_chains = 3
 
 # fit standard model
@@ -42,8 +42,8 @@ post_exp3p_het = sample(exp3p_het(x, y_het),
 
 
 # draw posterior predictive summaries for new data
-post = turing_predict(; post=post_exp3p, x_new=x_new, model="exp3p")
-post_het = turing_predict(; post=post_exp3p_het, x_new=x_new, model="exp3p_het")
+post = turing_predict(post=post_exp3p, x_new=x_new, model="exp3p")
+post_het = turing_predict(post=post_exp3p_het, x_new=x_new, model="exp3p_het")
 
 
 p0 = scatter(x, y_het, legend=false, color=:steelblue, markerstrokecolor=:steelblue, 

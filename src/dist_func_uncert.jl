@@ -22,7 +22,7 @@ include("functions.jl")
 # set seed
 Random.seed!(1234)
 
-n_samples = 10000
+n_samples = 10_000
 n_chains = 3
 
 # fit standard model
@@ -41,18 +41,18 @@ post_exp2p_trunc = sample(exp2p_trunc(x, y),
 
 
 # draw posterior predictive summaries for new data
-exp2p_pred = turing_predict(; post=post_exp2p, x_new=x_new,
+exp2p_pred = turing_predict(post=post_exp2p, x_new=x_new,
                             model="exp2p", summary=true)
 
-exp2p_pred_trunc = turing_predict(; post=post_exp2p_trunc, x_new=x_new,
+exp2p_pred_trunc = turing_predict(post=post_exp2p_trunc, x_new=x_new,
                                   model="exp2p_trunc", summary=true)
 
 
 # draw posterior predictive samples for x=0.05
-y_est = turing_predict(; post=post_exp2p, x_new=0.05,
+y_est = turing_predict(post=post_exp2p, x_new=0.05,
                        model="exp2p", summary=false)
 
-y_est_trunc = turing_predict(; post=post_exp2p_trunc, x_new=0.05,
+y_est_trunc = turing_predict(post=post_exp2p_trunc, x_new=0.05,
                              model="exp2p_trunc", summary=false)
 
 

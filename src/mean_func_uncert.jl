@@ -9,6 +9,7 @@ using JLD
 using DataFrames
 using GLM
 using Plots
+using Plots.PlotMeasures
 using StatsPlots
 using Turing
 
@@ -24,7 +25,7 @@ include("functions.jl")
 Random.seed!(1234)
 
 # MCMC parameters
-n_samples = 10000
+n_samples = 10_000
 n_chains = 3
 
 # fit models
@@ -58,9 +59,9 @@ exp3p_pred = turing_predict(post=post_exp3p, x_new=x_new, model="exp3p")
 
 # calculate (unweighted) model-averaged results
 # draw posterior predictive samples for new data
-quad_samps = turing_predict(; post=post_quad, x_new=x_new, model="quad_mod", summary=false)
-exp2p_samps = turing_predict(; post=post_exp2p, x_new=x_new, model="exp2p", summary=false)
-exp3p_samps = turing_predict(; post=post_exp3p, x_new=x_new, model="exp3p", summary=false)
+quad_samps = turing_predict(post=post_quad, x_new=x_new, model="quad_mod", summary=false)
+exp2p_samps = turing_predict(post=post_exp2p, x_new=x_new, model="exp2p", summary=false)
+exp3p_samps = turing_predict(post=post_exp3p, x_new=x_new, model="exp3p", summary=false)
 
 # calculate mean, 2.5% and 97.5% quantiles for model-averaged prediction
 mod_avg = mean(vcat(quad_samps, exp2p_samps, exp3p_samps), dims=1)'
@@ -122,6 +123,7 @@ p6 = plot!(x_new, mod_avg_975 - mod_avg_025, linewidth=1.5, linecolor=:black,
 Plots.pdf(
     plot(p1, p2, p3, p4, p5, p6,
          size=(width=1050, height=700),
+         left_margin=12px, 
          tick_direction=:out),
     "../figs/mod_avg.pdf"
 )

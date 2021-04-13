@@ -24,7 +24,7 @@ include("functions.jl")
 Random.seed!(1234)
 
 # MCMC parameters
-n_samples = 10000
+n_samples = 10_000
 n_chains = 3
 
 # fit 3P exponential model (no measurement error)
@@ -35,12 +35,12 @@ exp3p_fit0 = sample(exp3p(x, y),
                     n_chains)
 
 # prediction ignoring noise in x_new = 0.15
-post0_pred = turing_predict(; post=exp3p_fit0,
+post0_pred = turing_predict(post=exp3p_fit0,
                             x_new=0.15,
                             model="exp3p", summary=false)
 
 # prediction with noise in x_new
-exp3p_pred_err = turing_predict(; post=exp3p_fit0,
+exp3p_pred_err = turing_predict(post=exp3p_fit0,
                                 x_new=rand(Normal(0.15, 0.06), 1000),
                                 model="exp3p", summary=false)
 
@@ -75,15 +75,15 @@ exp3p_fit5 = sample(exp3p(x5, y5), NUTS(), MCMCThreads(), n_samples, n_chains)
 
 
 # draw posterior predictive summaries for new data
-exp3p_pred1  = turing_predict(; post=exp3p_fit1, x_new=0.15,
+exp3p_pred1  = turing_predict(post=exp3p_fit1, x_new=0.15,
                               model="exp3p", summary=false)
-exp3p_pred2  = turing_predict(; post=exp3p_fit2, x_new=0.15,
+exp3p_pred2  = turing_predict(post=exp3p_fit2, x_new=0.15,
                               model="exp3p", summary=false)
-exp3p_pred3  = turing_predict(; post=exp3p_fit3, x_new=0.15,
+exp3p_pred3  = turing_predict(post=exp3p_fit3, x_new=0.15,
                               model="exp3p", summary=false)
-exp3p_pred4  = turing_predict(; post=exp3p_fit4, x_new=0.15,
+exp3p_pred4  = turing_predict(post=exp3p_fit4, x_new=0.15,
                               model="exp3p", summary=false)
-exp3p_pred5  = turing_predict(; post=exp3p_fit5, x_new=0.15,
+exp3p_pred5  = turing_predict(post=exp3p_fit5, x_new=0.15,
                               model="exp3p", summary=false)
 
 # combine predictions across datasets

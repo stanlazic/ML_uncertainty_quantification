@@ -1,4 +1,7 @@
-# Quadratic model
+
+"""
+Quadratic model
+"""
 @model quad_mod(x, y) = begin
     # priors
     θ₀ ~ Normal(0, 5)
@@ -11,7 +14,9 @@
 end 
 
 
-# 2 parameter exponential model
+"""
+2 parameter exponential model
+"""
 @model exp2p(x, y) = begin
     # priors
     θ₁ ~ truncated(Normal(1, 5), 0, Inf)
@@ -23,7 +28,9 @@ end
 end 
 
 
-# 3 parameter exponential model
+"""
+3 parameter exponential model
+"""
 @model exp3p(x, y) = begin
     # priors
     θ₁ ~ truncated(Normal(1, 5), 0, Inf)
@@ -36,7 +43,9 @@ end
 end 
 
 
-# truncated 2-parameter exponential model
+"""
+truncated 2-parameter exponential model
+"""
 @model exp2p_trunc(x, y) = begin
     # priors
     θ₁ ~ truncated(Normal(1, 5), 0, Inf)
@@ -48,7 +57,9 @@ end
 end 
 
 
-# 3 parameter exponential model with variance function
+"""
+3 parameter exponential model with variance function
+"""
 @model exp3p_het(x, y) = begin
     # priors
     θ₁ ~ truncated(Normal(1, 5), 0, Inf)
@@ -66,7 +77,9 @@ end
 end
 
 
-# binomial model
+"""
+binomial model
+"""
 @model binom(x1, x2, y) = begin
     # priors
     θ₀ ~ Normal(0, 5)

@@ -163,3 +163,71 @@ N = length(x₁)
 
 @save "../data/binary_data.jld" x₁ x₂ grp θ₁ θ₂ θ₃
 
+
+
+## ------------------------------------------------------------
+## Basic example
+## ------------------------------------------------------------
+
+cpd1 = Truncated(Normal(3, 4), 0, Inf)
+cpd2 = Truncated(Normal(6, 1), 0, Inf)
+
+cpd1_mode = mode(cpd1)
+cpd2_mode = mode(cpd2)
+
+cpd1_pdf = pdf(cpd1, cpd1_mode)
+cpd2_pdf = pdf(cpd2, cpd2_mode)
+
+
+p1 = plot([], [], xlim=(0, 16), ylim=(0, 0.46),
+          xlab="Predicted AST levels (a.u.)",  ylab="", 
+          color=:steelblue, yticks=:none, label="", 
+          title="A\nPoint prediction", titleloc = :left, legend=:false)
+
+p1 = plot!(Shape([8, 17, 17, 8], [0, 0, 0.45, 0.45]), alpha=0.4,
+           color=:darkgrey, label=:none, linecolor=:darkgrey)
+
+
+p1 = scatter!([cpd1_mode], [0.013], label="Compound A",
+              markershape=:utriangle, markersize=8, markercolor=:steelblue,
+              legend=:topright)
+
+p1 = scatter!([cpd2_mode], [0.013], label="Compound B",
+              markershape=:utriangle, markersize=8, markercolor=:firebrick)
+
+p1 = annotate!(6.5, 0.32, text("Safe", 11))
+p1 = annotate!(9.5, 0.32, text("Toxic", 11))
+
+# plots 2
+p2 = plot([cpd1_mode, cpd1_mode], [0, cpd1_pdf], linewidth=2,
+     xlim=(0, 16), ylim=(0, 0.46), xlab="Predicted AST levels (a.u.)",
+          label="Compound A", color=:steelblue, ylab="", yticks=:none, 
+          title="B\nPrediction plus uncertainty", titleloc = :left)
+
+p2 = plot!([cpd2_mode, cpd2_mode], [0, cpd2_pdf], linewidth=2,
+      color=:firebrick, label="Compound B")
+
+p2 = plot!(Shape([8, 17, 17, 8], [0, 0, 0.45, 0.45]),
+           alpha=0.4, color=:darkgrey, label=:none,
+           linecolor=:darkgrey)
+
+p2 = plot!(cpd1, linecolor=:steelblue, linewidth=2, label=:none, 
+     fill=true, fillalpha=0.3, fillcolor=:steelblue)
+     
+p2 = plot!(cpd2, linecolor=:firebrick, linewidth=2, label=:none, 
+     fill=true, fillalpha=0.3, fillcolor=:firebrick)
+
+p2 = scatter!([cpd1_mode, cpd2_mode], [cpd1_pdf, cpd2_pdf],
+        markercolor=[:steelblue, :firebrick], label=:none)
+
+
+Plots.pdf(
+    plot(p1, p2,
+         size=(width=700, height=350),
+         tick_direction=:out),
+    "../figs/drug_example.pdf")
+
+
+# proportion of distributions above 8 (arbitrary threshold)
+1 - cdf(cpd1, 8)
+1 - cdf(cpd2, 8)

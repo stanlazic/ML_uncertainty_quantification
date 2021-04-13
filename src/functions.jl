@@ -99,8 +99,6 @@ function turing_predict(; post, x_new, model, summary=true)
         pred = Array{Float64}(undef, size(pars)[1], n_xs)
 
         for i in 1:n_xs
-            #pred[:, i] = @. rand(truncated(Normal(pars.θ₂ * (1 - exp(-pars.θ₁ * x_new[i])), 
-            #                                      pars.σ)), 0, Inf)
             pred[:, i] = @. rand(
                 truncated(Normal(pars.θ₂ * (1 - exp(-pars.θ₁ * x_new[i])), 
                                  pars.σ), 0, Inf))
