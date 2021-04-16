@@ -23,7 +23,7 @@ include("functions.jl")
 # set seed
 Random.seed!(1234)
 
-n_samples = 5_000
+n_samples = 10_000
 n_chains = 3
 
 # fit model
@@ -52,8 +52,8 @@ for i in 1:size(pars)[1]
                       x1_values, 0.5)
 end
 
-q_025 = [quantile(boundary_err[:, i], 0.025) for i in 1:size(x1_values)[1]]
-q_975 = [quantile(boundary_err[:, i], 0.975) for i in 1:size(x1_values)[1]]
+q_025 = [quantile(boundary_err[:, i], 0.025) for i in 1:length(x1_values)]
+q_975 = [quantile(boundary_err[:, i], 0.975) for i in 1:length(x1_values)]
 
 
 # calculate prediction
@@ -78,6 +78,14 @@ y_new1 = pred[:, 202]
 y_new2 = pred[:, 11]
 
 
+# Calculate aleatoric and epistemic uncertainty for each compound
+alea = mean(pred .* (1 .- pred), dims=1)
+epi = mean(pred.^2, dims=1) .- mean(pred, dims=1).^2
+
+# ratio of epistemic uncertainty for the two compounds
+epi[11] /  epi[202]
+
+
 # colours for plotting
 cols = Array{String}(undef, N)
 for i in 1:N
@@ -91,7 +99,9 @@ for i in 1:N
 end
 
 
+# Text labels for plotting
 labels = ifelse.(grp .== 0, "Safe", "Toxic")
+
 
 p1 = scatter(x₁, x₂, ylab="x₂", xlab="x₁", group=labels, 
              legend=:topleft, markersize=5, title="A\nData", titleloc = :left, 
@@ -103,7 +113,7 @@ p1 = plot!(x1_values, boundary_line, color=:black, linewidth=2, label=:none)
 
 p2 = scatter(means, sds, xlab="μ", ylab="σ",
              title="B\nMean - variance relationship", titleloc = :left, 
-             legend=:none, markersize=5, color=cols, ylim=(0, 0.16),
+             legend=:none, markersize=5, color=cols, ylim=(-0.005, 0.16),
              markershape=ifelse.(grp .== 0, :circle, :utriangle))
 
 p2 = scatter!(means[[11, 202]], sds[[11, 202]], markersize=13, markershape=:circle,
@@ -142,12 +152,35 @@ p6 = bar(["Safe", "Toxic"], [0.26, 0.74], color=:firebrick, fill=0, fillalpha=0.
          label=:none, title="F\nUncertain prediction (σ=0.12)", titleloc=:left,
          ylab="P(Class | Data)")
 
+p7 = scatter(means, alea', xlab="μ", ylab="Aleatoric uncertainty",
+             title="G\nMean - uncertainty relationship", titleloc = :left, 
+             legend=:none, markersize=5, color=cols, ylim=(-0.01, 0.4),
+             markershape=ifelse.(grp .== 0, :circle, :utriangle))
+
+p7 = scatter!(means[[11, 202]], alea[[11, 202]], markersize=13, markershape=:circle,
+              markeralpha=0.25, markercolor=:green3, 
+              markerstrokestyle=:dash)
+
+p8 = bar(["σ=0.06"], [alea[202]], color=:orange3, fill=0, fillalpha=0.3, label=:none, 
+         ylim=(0, 0.25), xlim=(-0.5, 2.5), linecolor=:orange3, bar_width=0.5,
+         title="H\nAleatoric uncertainty", titleloc=:left, ylab="Uncertainty")
+
+p8 = bar!(["σ=0.12"], [alea[11]], color=:firebrick, fill=0, fillalpha=0.3, label=:none,
+          linecolor= :firebrick, bar_width=0.5)
+
+p9 = bar(["σ=0.06"], [epi[202]], color=:orange3, fill=0, fillalpha=0.3,
+         ylim=(0, 0.02), xlim=(-0.5, 2.5), linecolor=:orange3, bar_width=0.5, label=:none, 
+         title="I\nEpistemic uncertainty", titleloc=:left, ylab="Uncertainty")
+
+p9 = bar!(["σ=0.12"], [epi[11]], color=:firebrick, fill=0, fillalpha=0.3, label=:none,
+          linecolor= :firebrick, bar_width=0.5)
+
 
 Plots.pdf(
-    plot(p1, p2, p3, p4, p5, p6,
+    plot(p1, p2, p3, p4, p5, p6, p7, p8, p9, 
          left_margin=5px,
          bottom_margin=10px,
          top_margin=15px,
-         size=(width=1050, height=700),
+         size=(width=1050, height=1050),
          tick_direction=:out),
     "../figs/binom_uncertainty.pdf")

@@ -182,7 +182,7 @@ cpd2_pdf = pdf(cpd2, cpd2_mode)
 p1 = plot([], [], xlim=(0, 16), ylim=(0, 0.46),
           xlab="Predicted AST levels (a.u.)",  ylab="", 
           color=:steelblue, yticks=:none, label="", 
-          title="A\nPoint prediction", titleloc = :left, legend=:false)
+          title=" A\n Point prediction", titleloc = :left, legend=:false)
 
 p1 = plot!(Shape([8, 17, 17, 8], [0, 0, 0.45, 0.45]), alpha=0.4,
            color=:darkgrey, label=:none, linecolor=:darkgrey)
@@ -202,7 +202,7 @@ p1 = annotate!(9.5, 0.32, text("Toxic", 11))
 p2 = plot([cpd1_mode, cpd1_mode], [0, cpd1_pdf], linewidth=2,
      xlim=(0, 16), ylim=(0, 0.46), xlab="Predicted AST levels (a.u.)",
           label="Compound A", color=:steelblue, ylab="", yticks=:none, 
-          title="B\nPrediction plus uncertainty", titleloc = :left)
+          title=" B\n Prediction plus uncertainty", titleloc = :left)
 
 p2 = plot!([cpd2_mode, cpd2_mode], [0, cpd2_pdf], linewidth=2,
       color=:firebrick, label="Compound B")
