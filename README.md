@@ -1,2 +1,2 @@
 # ML uncertainty quantification
-Code for paper: Lazic SE, Williams DP (2021). Quantifying and reporting uncertainty in drug discovery predictions with probabilistic models. (WIP)
+Code for paper: Lazic SE, Williams DP (2021). Quantifying sources of uncertainty in drug discovery predictions with probabilistic models. Link to manuscript: [DRAFT](https://stanlazic.github.io/PDF/2021_Lazic_ML_uncertainty.pdf)
