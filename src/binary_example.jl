@@ -78,12 +78,13 @@ y_new1 = pred[:, 202]
 y_new2 = pred[:, 11]
 
 
-# Calculate aleatoric and epistemic uncertainty for each compound
-alea = mean(pred .* (1 .- pred), dims=1)
-epi = mean(pred.^2, dims=1) .- mean(pred, dims=1).^2
+# Calculate outcome (aleatoric) and parameter (epistemic) uncertainty
+# for each compound
+oc_uncert = mean(pred .* (1 .- pred), dims=1)
+par_uncert = mean(pred.^2, dims=1) .- mean(pred, dims=1).^2
 
-# ratio of epistemic uncertainty for the two compounds
-epi[11] /  epi[202]
+# ratio of parameter uncertainty for the two compounds
+par_uncert[11] /  par_uncert[202]
 
 
 # colours for plotting
@@ -152,27 +153,27 @@ p6 = bar(["Safe", "Toxic"], [0.26, 0.74], color=:firebrick, fill=0, fillalpha=0.
          label=:none, title="F\nUncertain prediction (σ=0.12)", titleloc=:left,
          ylab="P(Class | Data)")
 
-p7 = scatter(means, alea', xlab="μ", ylab="Aleatoric uncertainty",
+p7 = scatter(means, oc_uncert', xlab="μ", ylab="Outcome uncertainty",
              title="G\nMean - uncertainty relationship", titleloc = :left, 
              legend=:none, markersize=5, color=cols, ylim=(-0.01, 0.4),
              markershape=ifelse.(grp .== 0, :circle, :utriangle))
 
-p7 = scatter!(means[[11, 202]], alea[[11, 202]], markersize=13, markershape=:circle,
+p7 = scatter!(means[[11, 202]], oc_uncert[[11, 202]], markersize=13, markershape=:circle,
               markeralpha=0.25, markercolor=:green3, 
               markerstrokestyle=:dash)
 
-p8 = bar(["σ=0.06"], [alea[202]], color=:orange3, fill=0, fillalpha=0.3, label=:none, 
+p8 = bar(["σ=0.06"], [oc_uncert[202]], color=:orange3, fill=0, fillalpha=0.3, label=:none, 
          ylim=(0, 0.25), xlim=(-0.5, 2.5), linecolor=:orange3, bar_width=0.5,
-         title="H\nAleatoric uncertainty", titleloc=:left, ylab="Uncertainty")
+         title="H\nOutcome uncertainty", titleloc=:left, ylab="Uncertainty")
 
-p8 = bar!(["σ=0.12"], [alea[11]], color=:firebrick, fill=0, fillalpha=0.3, label=:none,
+p8 = bar!(["σ=0.12"], [oc_uncert[11]], color=:firebrick, fill=0, fillalpha=0.3, label=:none,
           linecolor= :firebrick, bar_width=0.5)
 
-p9 = bar(["σ=0.06"], [epi[202]], color=:orange3, fill=0, fillalpha=0.3,
+p9 = bar(["σ=0.06"], [par_uncert[202]], color=:orange3, fill=0, fillalpha=0.3,
          ylim=(0, 0.02), xlim=(-0.5, 2.5), linecolor=:orange3, bar_width=0.5, label=:none, 
-         title="I\nEpistemic uncertainty", titleloc=:left, ylab="Uncertainty")
+         title="I\nParameter uncertainty", titleloc=:left, ylab="Uncertainty")
 
-p9 = bar!(["σ=0.12"], [epi[11]], color=:firebrick, fill=0, fillalpha=0.3, label=:none,
+p9 = bar!(["σ=0.12"], [par_uncert[11]], color=:firebrick, fill=0, fillalpha=0.3, label=:none,
           linecolor= :firebrick, bar_width=0.5)
 
 
